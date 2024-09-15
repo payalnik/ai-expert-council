@@ -33,6 +33,18 @@ python expert-council.py
 
 You can add experts and start discussions through the command line interface.
 
+## Example Experts File
+
+You can load experts from a file using the `/add` command followed by the filename. Below is an example of how the experts file should be formatted:
+
+```
+Steve (Expertise: CPO for LinkedIn, Personality: Straightforward and results-oriented)
+Maria (Expertise: User advocate, Personality: Kind but has strong opinions on positive and negative outcomes)
+Sasha (Expertise: Generative AI and applications, Personality: Curious and open-minded)
+Ken (Expertise: Career Coach with a lot of knowledge on the audience, Personality: Open minded and willing to share experience)
+Sadder (Expertise: Created a career course but couldn't find enough participants to sustain it, Personality: Open and direct)
+```
+
 ## License
 
 This project is licensed under the MIT License.
