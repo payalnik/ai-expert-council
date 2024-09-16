@@ -138,13 +138,18 @@ class ExpertCouncil:
                 """
                 messages = []
                 
+                combined_user_message = ""
                 for entry in self.history:
                     for role, content in entry.items():
                         if role == expert.name:
+                            if combined_user_message:
+                                messages.append({"role": "user", "content": combined_user_message.strip()})
+                                combined_user_message = ""
                             messages.append({"role": "assistant", "content": content})
-                        elif role == "Live Person":
-                            messages.append({"role": "user", "content": f"Live Person: {content}"})
-                            messages.append({"role": "user", "content": content})
+                        else:
+                            combined_user_message += f"{role}: {content} "
+                if combined_user_message:
+                    messages.append({"role": "user", "content": combined_user_message.strip()})
 
                 response = client.messages.create(
                     model="claude-3-5-sonnet-20240620",
