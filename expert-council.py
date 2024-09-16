@@ -45,7 +45,8 @@ class ExpertCouncil:
             user_input = input("You: ")
             if user_input.strip().lower() == "/add":
                 self.add_expert_flow()
-            else:
+            elif user_input.strip().lower() == "/generate":
+                self.generate_experts()
                 self.handle_user_message(user_input)
 
     def add_expert_flow(self):
@@ -67,7 +68,34 @@ class ExpertCouncil:
             print(f"Experts loaded from {filename}")
         else:
             print(f"File {filename} not found.")
-    def handle_user_message(self, message):
+    def generate_experts(self):
+        scenario = input("Describe the scenario for which you need experts: ")
+        prompt = f"Generate a list of experts for the following scenario: {scenario}. Format each expert as 'Name (Expertise: expertise, Personality: personality)'."
+
+        if api_choice == 'openai':
+            response = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[{"role": "system", "content": prompt}]
+            )
+            expert_list = response.choices[0].message.content.strip()
+        elif api_choice == 'claude':
+            response = client.messages.create(
+                model="claude-3-5-sonnet-20240620",
+                max_tokens=1000,
+                system=prompt,
+                messages=[]
+            )
+            expert_list = response.content[0].text.strip()
+
+        print("\033[92mGenerated Experts:\033[0m")
+        print(expert_list)
+
+        # Save the generated experts to a file
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        filename = os.path.join('chats', f"generated_experts_{timestamp}.txt")
+        with open(filename, 'w') as f:
+            f.write(expert_list)
+        print(f"Generated experts saved to {filename}")
         if message.strip().lower().startswith("/add "):
             filename = message.strip()[5:]
             self.load_experts_from_file(filename)
