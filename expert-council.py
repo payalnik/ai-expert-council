@@ -96,15 +96,21 @@ class ExpertCouncil:
         filename = os.path.join('chats', f"generated_experts_{timestamp}.txt")
         with open(filename, 'w') as f:
             f.write(expert_list)
-
         print(f"Generated experts saved to {filename}")
-        
-        self.history.append({"Live Person": message})
-        self.prompt_expert_response()
-        # Remove the last user message and the expert's response from history
+
+
+    def handle_user_message(self, message):
+        if message.strip().lower().startswith("/add "):
+            filename = message.strip()[5:]
+            self.load_experts_from_file(filename)
+        else:
+            self.history.append({"Live Person": message})
+            self.prompt_expert_response()
+            # Remove the last user message and the expert's response from history
         if len(self.history) >= 2:
             self.history.pop()
             self.history.pop()
+            
 
     def prompt_expert_response(self):
         print("\033[93mWho should reply? Options: A (All), N (None), or expert number.\033[0m")
