@@ -139,11 +139,10 @@ class ExpertCouncil:
                             messages.append({"role": "user", "content": f"Live Person: {content}"})
                             messages.append({"role": "user", "content": content})
 
-                response = client.messages.create(
+                response = client.completions.create(
                     model="claude-3-5-sonnet-20240620",
-                    system=prompt,
-                    max_tokens=1000,  # Adjust this value as needed
-                    messages=self.history
+                    max_tokens_to_sample=1000,  # Adjust this value as needed
+                    messages=messages
                 )
                 response_text = response['completion'].strip()
         except Exception as e:
