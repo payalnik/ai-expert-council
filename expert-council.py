@@ -129,8 +129,7 @@ class ExpertCouncil:
                 Don't focus on the points already made.
                 Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice
                 """
-                #messages = [{"role": "system", "content": prompt}]
-                messages = []
+                messages = [{"role": "system", "content": prompt}]
 
                 for entry in self.history:
                     for role, content in entry.items():
