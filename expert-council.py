@@ -129,8 +129,8 @@ class ExpertCouncil:
                 Don't focus on the points already made.
                 Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice
                 """
-                messages = [{"role": "system", "content": prompt}]
-
+                messages = []
+                
                 for entry in self.history:
                     for role, content in entry.items():
                         if role == expert.name:
@@ -139,9 +139,10 @@ class ExpertCouncil:
                             messages.append({"role": "user", "content": f"Live Person: {content}"})
                             messages.append({"role": "user", "content": content})
 
-                response = client.completions.create(
+                response = client.messages.create(
                     model="claude-3-5-sonnet-20240620",
-                    max_tokens_to_sample=1000,  # Adjust this value as needed
+                    max_tokens=1000,  # Adjust this value as needed
+                    system=prompt,
                     messages=messages
                 )
                 response_text = response['completion'].strip()
