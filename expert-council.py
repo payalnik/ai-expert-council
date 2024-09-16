@@ -129,6 +129,16 @@ class ExpertCouncil:
                 Don't focus on the points already made.
                 Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice
                 """
+                messages = [{"role": "system", "content": prompt}]
+
+                for entry in self.history:
+                    for role, content in entry.items():
+                        if role == expert.name:
+                            messages.append({"role": "assistant", "content": content})
+                        elif role == "Live Person":
+                            messages.append({"role": "user", "content": f"Live Person: {content}"})
+                            messages.append({"role": "user", "content": content})
+
                 response = client.messages.create(
                     model="claude-3-5-sonnet-20240620",
                     system=prompt,
