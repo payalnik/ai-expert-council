@@ -129,11 +129,11 @@ class ExpertCouncil:
                 Don't focus on the points already made.
                 Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice
                 """
-                response = client.completions.create(
+                response = client.messages.create(
                     model="claude-3-5-sonnet-20240620",
-                    prompt=prompt,
-                    max_tokens_to_sample=100,  # Adjust this value as needed
-                    history=self.history
+                    system=prompt,
+                    max_tokens=1000,  # Adjust this value as needed
+                    messages=self.history
                 )
                 response_text = response['completion'].strip()
         except Exception as e:
