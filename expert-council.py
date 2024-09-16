@@ -94,11 +94,14 @@ class ExpertCouncil:
 
         # Add generated experts to the chat
         for line in expert_list.splitlines():
-            if line.strip():
-                name, rest = line.split(" (Expertise: ")
-                expertise, personality = rest.split(", Personality: ")
-                personality = personality.rstrip(")")
-                self.add_expert(name.strip(), expertise.strip(), personality.strip())
+            if line.strip() and " (Expertise: " in line and ", Personality: " in line:
+                try:
+                    name, rest = line.split(" (Expertise: ")
+                    expertise, personality = rest.split(", Personality: ")
+                    personality = personality.rstrip(")")
+                    self.add_expert(name.strip(), expertise.strip(), personality.strip())
+                except ValueError:
+                    print(f"Skipping malformed line: {line}")
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         filename = os.path.join('chats', f"generated_experts_{timestamp}.txt")
         with open(filename, 'w') as f:
