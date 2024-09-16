@@ -13,8 +13,8 @@ if api_choice == 'openai':
     client = OpenAI(api_key=config['api_key'])
 elif api_choice == 'claude':
     # Assuming you have a similar client setup for Claude
-    from anthropic import Claude
-    client = Claude(api_key=config['api_key'])
+    import anthropic
+    client = anthropic.Anthropic(api_key=config['api_key'])
 else:
     raise ValueError("Invalid API choice in config.json. Choose 'openai' or 'claude'.")
 
