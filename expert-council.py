@@ -99,16 +99,12 @@ class ExpertCouncil:
 
         print(f"Generated experts saved to {filename}")
         
-        if message.strip().lower().startswith("/add "):
-            filename = message.strip()[5:]
-            self.load_experts_from_file(filename)
-        else:
-            self.history.append({"Live Person": message})
-            self.prompt_expert_response()
-            # Remove the last user message and the expert's response from history
-            if len(self.history) >= 2:
-                self.history.pop()
-                self.history.pop()
+        self.history.append({"Live Person": message})
+        self.prompt_expert_response()
+        # Remove the last user message and the expert's response from history
+        if len(self.history) >= 2:
+            self.history.pop()
+            self.history.pop()
 
     def prompt_expert_response(self):
         print("\033[93mWho should reply? Options: A (All), N (None), or expert number.\033[0m")
