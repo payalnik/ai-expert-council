@@ -75,8 +75,9 @@ class ExpertCouncil:
             self.history.append({"Live Person": message})
             self.prompt_expert_response()
             # Remove the last user message and the expert's response from history
-            self.history.pop()
-            self.history.pop()
+            if len(self.history) >= 2:
+                self.history.pop()
+                self.history.pop()
 
     def prompt_expert_response(self):
         print("\033[93mWho should reply? Options: A (All), N (None), or expert number.\033[0m")
