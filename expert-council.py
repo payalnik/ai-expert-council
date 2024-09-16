@@ -45,9 +45,10 @@ class ExpertCouncil:
             user_input = input("You: ")
             if user_input.strip().lower() == "/add":
                 self.add_expert_flow()
-            else:
+            elif user_input.strip().lower() == "/generate":
                 self.generate_experts()
-            self.handle_user_message(user_input)
+            else:
+                self.handle_user_message(user_input)
 
     def add_expert_flow(self):
         name = input("Enter a unique name for the expert: ")
@@ -100,13 +101,9 @@ class ExpertCouncil:
 
 
     def handle_user_message(self, message):
-        if message.strip().lower().startswith("/add "):
-            filename = message.strip()[5:]
-            self.load_experts_from_file(filename)
-        else:
-            self.history.append({"Live Person": message})
-            self.prompt_expert_response()
-            # Remove the last user message and the expert's response from history
+        self.history.append({"Live Person": message})
+        self.prompt_expert_response()
+        # Remove the last user message and the expert's response from history
         if len(self.history) >= 2:
             self.history.pop()
             self.history.pop()
