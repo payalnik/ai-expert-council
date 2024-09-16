@@ -45,9 +45,9 @@ class ExpertCouncil:
             user_input = input("You: ")
             if user_input.strip().lower() == "/add":
                 self.add_expert_flow()
-            elif user_input.strip().lower() == "/generate":
+            else:
                 self.generate_experts()
-                self.handle_user_message(user_input)
+            self.handle_user_message(user_input)
 
     def add_expert_flow(self):
         name = input("Enter a unique name for the expert: ")
