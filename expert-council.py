@@ -92,7 +92,13 @@ class ExpertCouncil:
         print("\033[92mGenerated Experts:\033[0m")
         print(expert_list)
 
-        # Save the generated experts to a file
+        # Add generated experts to the chat
+        for line in expert_list.splitlines():
+            if line.strip():
+                name, rest = line.split(" (Expertise: ")
+                expertise, personality = rest.split(", Personality: ")
+                personality = personality.rstrip(")")
+                self.add_expert(name.strip(), expertise.strip(), personality.strip())
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         filename = os.path.join('chats', f"generated_experts_{timestamp}.txt")
         with open(filename, 'w') as f:
