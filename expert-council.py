@@ -166,7 +166,8 @@ class ExpertCouncil:
 
     def save_state(self):
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        filename = f"council_state_{timestamp}.json"
+        os.makedirs('chats', exist_ok=True)
+        filename = os.path.join('chats', f"council_state_{timestamp}.json")
         with open(filename, 'w') as f:
             json.dump({
                 "experts": [vars(expert) for expert in self.experts],
