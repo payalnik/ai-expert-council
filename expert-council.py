@@ -97,7 +97,8 @@ class ExpertCouncil:
             Here are the other experts:\n{expert_descriptions}. \n\n 
             Keep it conversational. Don't jump to conclusions and don't start with solutions. Minimize bullet points.
             Do not answer for other experts. Only answer for yourself.
-            Don't focus on the points already made"""}]
+            Don't focus on the points already made.
+            Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice"""}]
 
             for entry in self.history:
                 for role, content in entry.items():
