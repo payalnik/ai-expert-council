@@ -157,7 +157,7 @@ class ExpertCouncil:
                     system=prompt,
                     messages=messages
                 )
-                response_text = response['completion'].strip()
+                response_text = response.completion.strip()
         except Exception as e:
             response_text = f"Error in generating response: {str(e)}"
         print(f"\033[96m{expert.name}:\033[0m {response_text}")
