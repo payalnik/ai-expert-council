@@ -109,13 +109,20 @@ class ExpertCouncil:
                 Don't focus on the points already made.
                 Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice"""}]
 
+                user_messages = []
+                assistant_messages = []
+
                 for entry in self.history:
                     for role, content in entry.items():
                         if role == expert.name:
-                            messages.append({"role": "assistant", "content": content})
+                            assistant_messages.append(content)
                         elif role == "Live Person":
-                            messages.append({"role": "user", "content": f"Live Person: {content}"})
-                            messages.append({"role": "user", "content": content})
+                            user_messages.append(content)
+
+                if user_messages:
+                    messages.append({"role": "user", "content": " ".join(user_messages)})
+                if assistant_messages:
+                    messages.append({"role": "assistant", "content": " ".join(assistant_messages)})
                 response = client.chat.completions.create(model="gpt-4o", messages=messages)
                 response_text = response.choices[0].message.content.strip()
 
