@@ -7,7 +7,16 @@ from openai import OpenAI
 # Load API key from config.json
 with open('config.json', 'r') as f:
     config = json.load(f)
-client = OpenAI(api_key=config['api_key'])
+api_choice = config.get('api_choice', 'openai').lower()
+
+if api_choice == 'openai':
+    client = OpenAI(api_key=config['api_key'])
+elif api_choice == 'claude':
+    # Assuming you have a similar client setup for Claude
+    from anthropic import Claude
+    client = Claude(api_key=config['api_key'])
+else:
+    raise ValueError("Invalid API choice in config.json. Choose 'openai' or 'claude'.")
 
 class Expert:
     def __init__(self, name, expertise, personality):
@@ -88,27 +97,40 @@ class ExpertCouncil:
                 print("Invalid choice. Please try again.")
 
     def expert_reply(self, expert):
-        # Make an API call to OpenAI's GPT4o
         try:
-            expert_descriptions = "\n".join([f"{exp.name}: Expertise in {exp.expertise}, Personality: {exp.personality}" for exp in self.experts if exp!=expert])
+            expert_descriptions = "\n".join([f"{exp.name}: Expertise in {exp.expertise}, Personality: {exp.personality}" for exp in self.experts if exp != expert])
 
-            messages = [{"role": "system", "content": f"""
-            You are {expert.name}, an expert in {expert.expertise} with a {expert.personality} personality. 
-            Here are the other experts:\n{expert_descriptions}. \n\n 
-            Keep it conversational. Don't jump to conclusions and don't start with solutions. Minimize bullet points.
-            Do not answer for other experts. Only answer for yourself.
-            Don't focus on the points already made.
-            Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice"""}]
+            if api_choice == 'openai':
+                messages = [{"role": "system", "content": f"""
+                You are {expert.name}, an expert in {expert.expertise} with a {expert.personality} personality. 
+                Here are the other experts:\n{expert_descriptions}. \n\n 
+                Keep it conversational. Don't jump to conclusions and don't start with solutions. Minimize bullet points.
+                Do not answer for other experts. Only answer for yourself.
+                Don't focus on the points already made.
+                Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice"""}]
 
-            for entry in self.history:
-                for role, content in entry.items():
-                    if role == expert.name:
-                        messages.append({"role": "assistant", "content": content})
-                    elif role == "Live Person":
-                        messages.append({"role": "user", "content": f"Live Person: {content}"})
-                        messages.append({"role": "user", "content": content})
-            response = client.chat.completions.create(model="gpt-4o", messages=messages)
-            response_text = response.choices[0].message.content.strip()
+                for entry in self.history:
+                    for role, content in entry.items():
+                        if role == expert.name:
+                            messages.append({"role": "assistant", "content": content})
+                        elif role == "Live Person":
+                            messages.append({"role": "user", "content": f"Live Person: {content}"})
+                            messages.append({"role": "user", "content": content})
+                response = client.chat.completions.create(model="gpt-4o", messages=messages)
+                response_text = response.choices[0].message.content.strip()
+
+            elif api_choice == 'claude':
+                # Assuming Claude API has a similar interface
+                prompt = f"""
+                You are {expert.name}, an expert in {expert.expertise} with a {expert.personality} personality. 
+                Here are the other experts:\n{expert_descriptions}. \n\n 
+                Keep it conversational. Don't jump to conclusions and don't start with solutions. Minimize bullet points.
+                Do not answer for other experts. Only answer for yourself.
+                Don't focus on the points already made.
+                Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice
+                """
+                response = client.completions.create(prompt=prompt, history=self.history)
+                response_text = response['completion'].strip()
         except Exception as e:
             response_text = f"Error in generating response: {str(e)}"
         print(f"\033[96m{expert.name}:\033[0m {response_text}")
