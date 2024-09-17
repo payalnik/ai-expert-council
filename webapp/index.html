@@ -167,7 +167,12 @@
         function enableControls() {
             localStorage.setItem('apiKey', apiKey);
             localStorage.setItem('apiKey', apiKey);
-            enableControls();
+            document.getElementById('addExpertButton').style.display = 'block';
+            document.getElementById('generateExpertsButton').style.display = 'block';
+            document.getElementById('showExpertsLink').style.display = 'inline';
+            document.getElementById('showExpertsLink').style.pointerEvents = 'auto';
+            document.getElementById('showExpertsLink').style.color = '#007bff';
+            document.getElementById('input').disabled = false;
         }
 
         function enterApiKey() {
