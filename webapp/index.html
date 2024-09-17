@@ -70,7 +70,7 @@
 <body>
     <h1>Expert Council Web App</h1>
     <div class="button-container">
-        <button id="apiKeyButton" onclick="enterApiKey()">Enter API key</button>
+        <button id="apiKeyButton" onclick="enterApiKey()">Enter API Key</button>
         <button id="newChatButton" onclick="newChat()" style="display: none;">New Chat</button>
         <button id="addExpertButton" onclick="addExpert()" style="display: none;">Add Expert</button>
         <button id="generateExpertsButton" onclick="generateExperts()" style="display: none;">Generate Experts</button>
@@ -194,7 +194,12 @@
         }
 
         function enterApiKey() {
-            apiKey = prompt("Please enter your API key:");
+            const apiKeyInput = prompt("Please enter your API key:");
+            if (!apiKeyInput) {
+                alert('API key is required to use this application.');
+                return;
+            }
+            apiKey = apiKeyInput;
             if (!apiKey) {
                 alert('API key is required to use this application.');
                 return;
