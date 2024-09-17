@@ -18,6 +18,12 @@
     <div id="chat"></div>
     <input type="text" id="input" placeholder="Type your message here" onkeydown="if(event.key === 'Enter') sendMessage()">
     <script>
+        window.onload = function() {
+            apiKey = prompt("Please enter your API key:");
+            if (!apiKey) {
+                alert('API key is required to use this application.');
+            }
+        };
         let experts = [];
         let history = [];
         let apiKey = '';
