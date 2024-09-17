@@ -192,6 +192,7 @@
                 alert('API key is required to use this application.');
                 return;
             }
+            localStorage.setItem('apiKey', apiKey);
             document.getElementById('apiKeyButton').textContent = 'Edit API Key';
             document.getElementById('addExpertButton').style.display = 'block';
             document.getElementById('generateExpertsButton').style.display = 'block';
