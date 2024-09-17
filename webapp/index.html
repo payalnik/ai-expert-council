@@ -77,6 +77,7 @@
         <a id="showExpertsLink" href="#" onclick="showActiveExperts()" style="display: none; pointer-events: none; color: grey;">Show Active Experts</a>
     </div>
     <div id="chat"></div>
+    <div id="loading" style="display: none; color: grey;">Loading, please wait...</div>
     <input type="text" id="input" placeholder="Type your message here" onkeydown="if(event.key === 'Enter') sendMessage()" disabled>
     <script>
         let experts = [];
@@ -123,6 +124,7 @@
             Add some personal traits and experiences. 5 experts if not otherwise specified \n\n
             Format each expert as 'Name (Expertise: expertise, Personality: personality)'.`;
 
+            document.getElementById('loading').style.display = 'block';
             fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
@@ -135,6 +137,7 @@
                 })
             })
             .finally(() => {
+                document.getElementById('loading').style.display = 'none';
                 enableControls();
             });
             .then(response => response.json())
