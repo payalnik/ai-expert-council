@@ -15,6 +15,7 @@
     <button onclick="startChat()">Start Chat</button>
     <button onclick="addExpert()">Add Expert</button>
     <button onclick="generateExperts()">Generate Experts</button>
+    <a href="#" onclick="showActiveExperts()">Show Active Experts</a>
     <div id="chat"></div>
     <input type="text" id="input" placeholder="Type your message here" onkeydown="if(event.key === 'Enter') sendMessage()">
     <script>
@@ -24,6 +25,15 @@
 
         function startChat() {
             document.getElementById('chat').innerHTML = '<p>Welcome to the Expert Council Simulation!</p>';
+        }
+
+        function showActiveExperts() {
+            if (experts.length === 0) {
+                alert("No active experts available.");
+                return;
+            }
+            const expertList = experts.map(expert => `${expert.name} (Expertise: ${expert.expertise}, Personality: ${expert.personality})`).join('<br>');
+            document.getElementById('chat').innerHTML += `<p><strong>Active Experts:</strong><br>${expertList}</p>`;
         }
 
         function addExpert() {
