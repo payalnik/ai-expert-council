@@ -70,13 +70,14 @@
 <body>
     <h1>Expert Council Web App</h1>
     <div class="button-container">
-        <button onclick="newChat()">New Chat</button>
-        <button onclick="addExpert()">Add Expert</button>
-        <button onclick="generateExperts()">Generate Experts</button>
-        <a href="#" onclick="showActiveExperts()">Show Active Experts</a>
+        <button id="apiKeyButton" onclick="enterApiKey()">Enter API key</button>
+        <button id="newChatButton" onclick="newChat()" disabled>New Chat</button>
+        <button id="addExpertButton" onclick="addExpert()" disabled>Add Expert</button>
+        <button id="generateExpertsButton" onclick="generateExperts()" disabled>Generate Experts</button>
+        <a id="showExpertsLink" href="#" onclick="showActiveExperts()" style="pointer-events: none; color: grey;">Show Active Experts</a>
     </div>
     <div id="chat"></div>
-    <input type="text" id="input" placeholder="Type your message here" onkeydown="if(event.key === 'Enter') sendMessage()">
+    <input type="text" id="input" placeholder="Type your message here" onkeydown="if(event.key === 'Enter') sendMessage()" disabled>
     <script>
         let experts = [];
         let history = [];
@@ -156,19 +157,20 @@
                 <p>Welcome to the Expert Council Simulation!</p>
                 <p style="color: grey;">This app uses AI to generate a council of experts. You can add your own experts or generate them based on a scenario.</p>
             `;
+        };
+
+        function enterApiKey() {
             apiKey = prompt("Please enter your API key:");
             if (!apiKey) {
                 alert('API key is required to use this application.');
-            }
-        };
-
-        function startChat() {
-            apiKey = document.getElementById('apiKey').value;
-            if (!apiKey) {
-                alert('Please enter an API key.');
                 return;
             }
-            document.getElementById('chat').innerHTML = '<p>Welcome to the Expert Council Simulation!</p>';
+            document.getElementById('newChatButton').disabled = false;
+            document.getElementById('addExpertButton').disabled = false;
+            document.getElementById('generateExpertsButton').disabled = false;
+            document.getElementById('showExpertsLink').style.pointerEvents = 'auto';
+            document.getElementById('showExpertsLink').style.color = '#007bff';
+            document.getElementById('input').disabled = false;
         }
 
         function sendMessage() {
