@@ -155,7 +155,8 @@
         window.onload = function() {
             document.getElementById('chat').innerHTML = `
                 <p>Welcome to the Expert Council Simulation!</p>
-                <p style="color: grey;">This app uses AI to generate a council of experts. You can add your own experts or generate them based on a scenario.</p>
+                <p style="color: grey;">This app uses AI to generate a council of experts. \n\n
+                    You can add experts or generate them based on your specific needs.</p>
             `;
             const inputField = document.getElementById('input');
             inputField.disabled = true;
@@ -238,7 +239,7 @@
             const systemContent = `
                 You are ${expert.name}, an expert in ${expert.expertise} with a ${expert.personality} personality. 
                 Here are the other experts:\n${expertDescriptions}. \n\n 
-                Keep it conversational. Don't jump to conclusions and don't start with solutions. Minimize bullet points. 
+                Keep it conversational. Don't jump to conclusions and don't start with solutions. Minimize bullet points and keep it short. 
                 Do not answer for other experts. Only answer for yourself. Stay within your expertise and character.
                 Don't focus on the points already made.
                 Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice
