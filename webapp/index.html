@@ -232,21 +232,28 @@
         }
 
         function promptExpertResponse() {
-            let choice = prompt("Who should reply? Options: A (All), N (None), or expert number.\n" +
-                experts.map((expert, idx) => `${idx}: ${expert.name}`).join("\n"));
-            choice = choice.trim().toUpperCase();
-            if (choice === "A") {
+            const dialog = document.createElement('div');
+            dialog.innerHTML = `
+                <p>Who should reply? Options:</p>
+                <button onclick="selectAllExperts()">All</button>
+                <button onclick="selectNoExperts()">None</button>
+                ${experts.map((expert, idx) => `<button onclick="selectExpert(${idx})">${expert.name}</button>`).join('')}
+            `;
+            document.body.appendChild(dialog);
+
+            window.selectAllExperts = function() {
                 experts.forEach(expert => expertReply(expert));
-            } else if (choice === "N") {
-                return;
-            } else {
-                const expertIdx = parseInt(choice);
-                if (!isNaN(expertIdx) && expertIdx >= 0 && expertIdx < experts.length) {
-                    expertReply(experts[expertIdx]);
-                } else {
-                    alert("Invalid choice. Please try again.");
-                }
-            }
+                document.body.removeChild(dialog);
+            };
+
+            window.selectNoExperts = function() {
+                document.body.removeChild(dialog);
+            };
+
+            window.selectExpert = function(idx) {
+                expertReply(experts[idx]);
+                document.body.removeChild(dialog);
+            };
         }
 
         function expertReply(expert) {
