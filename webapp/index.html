@@ -180,9 +180,14 @@
             })
             .then(response => response.json())
             .then(data => {
-                const responseText = data.choices[0].message.content.trim();
-                document.getElementById('chat').innerHTML += `<p>${expert.name}: ${responseText}</p>`;
-                history.push({ [expert.name]: responseText });
+                if (data.choices && data.choices.length > 0 && data.choices[0].message) {
+                    const responseText = data.choices[0].message.content.trim();
+                    document.getElementById('chat').innerHTML += `<p>${expert.name}: ${responseText}</p>`;
+                    history.push({ [expert.name]: responseText });
+                } else {
+                    console.error('Unexpected API response structure:', data);
+                    document.getElementById('chat').innerHTML += `<p>Error: Unexpected API response structure.</p>`;
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
