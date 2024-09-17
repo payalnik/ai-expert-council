@@ -109,6 +109,7 @@
                 experts.push({ name, expertise, personality });
                 alert(`Expert ${name} added successfully.`);
                 enableControls();
+                showActiveExperts();
             } else {
                 alert("All fields are required to add an expert.");
             }
