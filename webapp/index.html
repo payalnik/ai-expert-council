@@ -153,10 +153,12 @@
                 console.error('Error:', error);
                 alert("Error: Unable to generate experts.");
             })
-            .finally(() => {
-                document.getElementById('loading').style.display = 'none';
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
             })
-            .then(response => response.json())
             .then(data => {
                 const expertList = data.choices[0].message.content.trim();
                 expertList.split('\n').forEach(line => {
@@ -167,10 +169,14 @@
                     }
                 });
                 alert("Experts generated and added successfully.");
+                enableControls();
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert("Error: Unable to generate experts.");
+            })
+            .finally(() => {
+                document.getElementById('loading').style.display = 'none';
             });
         }
 
