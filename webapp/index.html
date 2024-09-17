@@ -177,7 +177,7 @@
                 },
                 body: JSON.stringify({
                     model: 'gpt-4o',
-                    messages: [{ role: 'user', content: prompt }]
+                    messages: messages
                 })
             })
             .then(response => response.json())
