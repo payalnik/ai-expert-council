@@ -172,7 +172,14 @@
             document.getElementById('showExpertsLink').style.display = 'inline';
             document.getElementById('showExpertsLink').style.pointerEvents = 'auto';
             document.getElementById('showExpertsLink').style.color = '#007bff';
-            document.getElementById('input').disabled = false;
+            const inputField = document.getElementById('input');
+            if (experts.length === 0) {
+                inputField.disabled = true;
+                inputField.placeholder = 'Add or generate experts to start dialog';
+            } else {
+                inputField.disabled = false;
+                inputField.placeholder = 'Type your message here';
+            }
         }
 
         function enterApiKey() {
