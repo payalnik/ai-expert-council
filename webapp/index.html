@@ -125,6 +125,7 @@
             Format each expert as 'Name (Expertise: expertise, Personality: personality)'.`;
 
             document.getElementById('loading').style.display = 'block';
+            document.getElementById('loading').style.display = 'block';
             fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
@@ -137,6 +138,7 @@
                 })
             })
             .finally(() => {
+                document.getElementById('loading').style.display = 'none';
                 document.getElementById('loading').style.display = 'none';
                 enableControls();
             })
