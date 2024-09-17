@@ -81,7 +81,7 @@
     <script>
         let experts = [];
         let history = [];
-        let apiKey = '';
+        let apiKey = localStorage.getItem('apiKey') || '';
 
         function newChat() {
             history = [];
@@ -157,7 +157,15 @@
                 <p>Welcome to the Expert Council Simulation!</p>
                 <p style="color: grey;">This app uses AI to generate a council of experts. You can add your own experts or generate them based on a scenario.</p>
             `;
+            if (apiKey) {
+                enableControls();
+            }
         };
+
+        function enableControls() {
+            localStorage.setItem('apiKey', apiKey);
+            enableControls();
+        }
 
         function enterApiKey() {
             apiKey = prompt("Please enter your API key:");
