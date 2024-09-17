@@ -152,6 +152,10 @@
         }
 
         window.onload = function() {
+            document.getElementById('chat').innerHTML = `
+                <p>Welcome to the Expert Council Simulation!</p>
+                <p style="color: grey;">This app uses AI to generate a council of experts. You can add your own experts or generate them based on a scenario.</p>
+            `;
             apiKey = prompt("Please enter your API key:");
             if (!apiKey) {
                 alert('API key is required to use this application.');
