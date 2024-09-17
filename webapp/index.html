@@ -108,6 +108,7 @@
             if (name && expertise && personality) {
                 experts.push({ name, expertise, personality });
                 alert(`Expert ${name} added successfully.`);
+                enableControls();
             } else {
                 alert("All fields are required to add an expert.");
             }
