@@ -157,6 +157,10 @@
                 <p>Welcome to the Expert Council Simulation!</p>
                 <p style="color: grey;">This app uses AI to generate a council of experts. You can add your own experts or generate them based on a scenario.</p>
             `;
+            const inputField = document.getElementById('input');
+            inputField.disabled = true;
+            inputField.placeholder = 'Add or generate experts to start dialog';
+
             const apiKeyButton = document.getElementById('apiKeyButton');
             if (apiKey) {
                 apiKeyButton.textContent = 'Edit API Key';
