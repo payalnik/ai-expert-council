@@ -135,20 +135,37 @@
                 .map(exp => `${exp.name}: Expertise in ${exp.expertise}, Personality: ${exp.personality}`)
                 .join("\n");
 
-            const conversationHistory = history.map(entry => {
-                const [role, message] = Object.entries(entry)[0];
-                return `${role}: ${message}`;
-            }).join("\n");
+            const messages = [
+                {
+                    role: "system",
+                    content: `
+                        You are ${expert.name}, an expert in ${expert.expertise} with a ${expert.personality} personality. 
+                        Here are the other experts:\n${expertDescriptions}. \n\n 
+                        Keep it conversational. Don't jump to conclusions and don't start with solutions. Minimize bullet points.
+                        Do not answer for other experts. Only answer for yourself.
+                        Don't focus on the points already made.
+                        Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice
+                    `
+                }
+            ];
 
-            const prompt = `
-                You are ${expert.name}, an expert in ${expert.expertise} with a ${expert.personality} personality. 
-                Here are the other experts:\n${expertDescriptions}. \n\n 
-                Conversation so far:\n${conversationHistory}\n\n
-                Keep it conversational. Don't jump to conclusions and don't start with solutions. Minimize bullet points.
-                Do not answer for other experts. Only answer for yourself.
-                Don't focus on the points already made.
-                Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice
-            `;
+            let combinedUserMessage = "";
+            history.forEach(entry => {
+                const [role, message] = Object.entries(entry)[0];
+                if (role === expert.name) {
+                    if (combinedUserMessage) {
+                        messages.push({ role: "user", content: combinedUserMessage.trim() });
+                        combinedUserMessage = "";
+                    }
+                    messages.push({ role: "assistant", content: message });
+                } else {
+                    combinedUserMessage += `${role}: ${message} `;
+                }
+            });
+
+            if (combinedUserMessage) {
+                messages.push({ role: "user", content: combinedUserMessage.trim() });
+            }
 
             fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
