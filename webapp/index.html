@@ -74,7 +74,6 @@
         <button id="newChatButton" onclick="newChat()" style="display: none;">New Chat</button>
         <button id="addExpertButton" onclick="addExpert()" style="display: none;">Add Expert</button>
         <button id="generateExpertsButton" onclick="generateExperts()" style="display: none;">Generate Experts</button>
-        <a id="showExpertsLink" href="#" onclick="showActiveExperts()" style="display: none; pointer-events: none; color: grey;">Show Active Experts</a>
     </div>
     <div id="chat"></div>
     <div id="loading" style="display: none; color: grey;">Loading, please wait...</div>
@@ -188,9 +187,6 @@
             localStorage.setItem('apiKey', apiKey);
             document.getElementById('addExpertButton').style.display = 'block';
             document.getElementById('generateExpertsButton').style.display = 'block';
-            document.getElementById('showExpertsLink').style.display = 'inline';
-            document.getElementById('showExpertsLink').style.pointerEvents = 'auto';
-            document.getElementById('showExpertsLink').style.color = '#007bff';
             const inputField = document.getElementById('input');
             if (experts.length === 0) {
                 inputField.disabled = true;
