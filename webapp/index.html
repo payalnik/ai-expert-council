@@ -125,7 +125,6 @@
             Format each expert as 'Name (Expertise: expertise, Personality: personality)'.`;
 
             document.getElementById('loading').style.display = 'block';
-            document.getElementById('loading').style.display = 'block';
             fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
@@ -137,11 +136,26 @@
                     messages: [{ role: 'user', content: promptText }]
                 })
             })
-            .finally(() => {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('loading').style.display = 'none';
+            .then(response => response.json())
+            .then(data => {
+                const expertList = data.choices[0].message.content.trim();
+                expertList.split('\n').forEach(line => {
+                    const match = line.match(/(.+) \(Expertise: (.+), Personality: (.+)\)/);
+                    if (match) {
+                        const [, name, expertise, personality] = match;
+                        experts.push({ name, expertise, personality });
+                    }
+                });
+                alert("Experts generated and added successfully.");
                 enableControls();
             })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Error: Unable to generate experts.");
+            })
+            .finally(() => {
+                document.getElementById('loading').style.display = 'none';
+            });
             .then(response => response.json())
             .then(data => {
                 const expertList = data.choices[0].message.content.trim();
