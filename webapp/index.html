@@ -71,10 +71,10 @@
     <h1>Expert Council Web App</h1>
     <div class="button-container">
         <button id="apiKeyButton" onclick="enterApiKey()">Enter API key</button>
-        <button id="newChatButton" onclick="newChat()" disabled>New Chat</button>
-        <button id="addExpertButton" onclick="addExpert()" disabled>Add Expert</button>
-        <button id="generateExpertsButton" onclick="generateExperts()" disabled>Generate Experts</button>
-        <a id="showExpertsLink" href="#" onclick="showActiveExperts()" style="pointer-events: none; color: grey;">Show Active Experts</a>
+        <button id="newChatButton" onclick="newChat()" style="display: none;">New Chat</button>
+        <button id="addExpertButton" onclick="addExpert()" style="display: none;">Add Expert</button>
+        <button id="generateExpertsButton" onclick="generateExperts()" style="display: none;">Generate Experts</button>
+        <a id="showExpertsLink" href="#" onclick="showActiveExperts()" style="display: none; pointer-events: none; color: grey;">Show Active Experts</a>
     </div>
     <div id="chat"></div>
     <input type="text" id="input" placeholder="Type your message here" onkeydown="if(event.key === 'Enter') sendMessage()" disabled>
@@ -165,9 +165,10 @@
                 alert('API key is required to use this application.');
                 return;
             }
-            document.getElementById('newChatButton').disabled = false;
-            document.getElementById('addExpertButton').disabled = false;
-            document.getElementById('generateExpertsButton').disabled = false;
+            document.getElementById('newChatButton').style.display = 'block';
+            document.getElementById('addExpertButton').style.display = 'block';
+            document.getElementById('generateExpertsButton').style.display = 'block';
+            document.getElementById('showExpertsLink').style.display = 'inline';
             document.getElementById('showExpertsLink').style.pointerEvents = 'auto';
             document.getElementById('showExpertsLink').style.color = '#007bff';
             document.getElementById('input').disabled = false;
