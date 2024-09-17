@@ -184,7 +184,8 @@
             .then(response => response.json())
             .then(data => {
                 if (data.choices && data.choices.length > 0 && data.choices[0].message) {
-                    const responseText = data.choices[0].message.content.trim();
+                    let responseText = data.choices[0].message.content.trim();
+                    responseText = responseText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
                     document.getElementById('chat').innerHTML += `<p>${expert.name}: ${responseText}</p>`;
                     history.push({ [expert.name]: responseText });
                 } else {
