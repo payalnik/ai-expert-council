@@ -68,12 +68,40 @@
                 Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice
             `;
 
-            // Simulate API call
-            setTimeout(() => {
-                const responseText = `Simulated response from ${expert.name}`;
+            const expertDescriptions = experts.filter(exp => exp !== expert)
+                .map(exp => `${exp.name}: Expertise in ${exp.expertise}, Personality: ${exp.personality}`)
+                .join("\n");
+
+            const prompt = `
+                You are ${expert.name}, an expert in ${expert.expertise} with a ${expert.personality} personality. 
+                Here are the other experts:\n${expertDescriptions}. \n\n 
+                Keep it conversational. Don't jump to conclusions and don't start with solutions. Minimize bullet points.
+                Do not answer for other experts. Only answer for yourself.
+                Don't focus on the points already made.
+                Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice
+            `;
+
+            fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o',
+                    messages: [{ role: 'user', content: prompt }]
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const responseText = data.choices[0].message.content.trim();
                 document.getElementById('chat').innerHTML += `<p>${expert.name}: ${responseText}</p>`;
                 history.push({ [expert.name]: responseText });
-            }, 1000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('chat').innerHTML += `<p>Error: Unable to fetch response from API.</p>`;
+            });
         }
     </script>
 </body>
