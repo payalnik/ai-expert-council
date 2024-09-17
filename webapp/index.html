@@ -134,6 +134,9 @@
                     messages: [{ role: 'user', content: promptText }]
                 })
             })
+            .finally(() => {
+                enableControls();
+            });
             .then(response => response.json())
             .then(data => {
                 const expertList = data.choices[0].message.content.trim();
