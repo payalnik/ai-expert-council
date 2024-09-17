@@ -56,7 +56,9 @@
                 return;
             }
 
-            const promptText = `Generate a list of experts for the following scenario: ${scenario}. Format each expert as 'Name (Expertise: expertise, Personality: personality)'.`;
+            const promptText = `Generate a list of experts for the following scenario: ${scenario}. Make them diverse and relevant. \n\n
+            Add some personal traits and experiences. 5 experts if not otherwise specified \n\n
+            Format each expert as 'Name (Expertise: expertise, Personality: personality)'.`;
 
             fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
