@@ -133,19 +133,21 @@
 
             const expertDescriptions = experts.filter(exp => exp !== expert)
                 .map(exp => `${exp.name}: Expertise in ${exp.expertise}, Personality: ${exp.personality}`)
-                .join("\n");
+                .join("\n") || "No other experts available.";
+
+            const systemContent = `
+                You are ${expert.name}, an expert in ${expert.expertise} with a ${expert.personality} personality. 
+                Here are the other experts:\n${expertDescriptions}. \n\n 
+                Keep it conversational. Don't jump to conclusions and don't start with solutions. Minimize bullet points.
+                Do not answer for other experts. Only answer for yourself.
+                Don't focus on the points already made.
+                Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice
+            `.trim();
 
             const messages = [
                 {
                     role: "system",
-                    content: `
-                        You are ${expert.name}, an expert in ${expert.expertise} with a ${expert.personality} personality. 
-                        Here are the other experts:\n${expertDescriptions}. \n\n 
-                        Keep it conversational. Don't jump to conclusions and don't start with solutions. Minimize bullet points.
-                        Do not answer for other experts. Only answer for yourself.
-                        Don't focus on the points already made.
-                        Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice
-                    `
+                    content: systemContent
                 }
             ];
 
