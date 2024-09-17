@@ -136,23 +136,6 @@
                     messages: [{ role: 'user', content: promptText }]
                 })
             })
-            .then(response => response.json())
-            .then(data => {
-                const expertList = data.choices[0].message.content.trim();
-                expertList.split('\n').forEach(line => {
-                    const match = line.match(/(.+) \(Expertise: (.+), Personality: (.+)\)/);
-                    if (match) {
-                        const [, name, expertise, personality] = match;
-                        experts.push({ name, expertise, personality });
-                    }
-                });
-                alert("Experts generated and added successfully.");
-                enableControls();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("Error: Unable to generate experts.");
-            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
