@@ -112,10 +112,14 @@
         }
 
         function promptExpertResponse() {
-            const choice = prompt("Who should reply? Options: A (All), N (None), or expert number.");
+            let choice = prompt("Who should reply? Options: A (All), N (None), or expert number.\n" +
+                experts.map((expert, idx) => `${idx}: ${expert.name}`).join("\n"));
+            choice = choice.trim().toUpperCase();
             if (choice === "A") {
                 experts.forEach(expert => expertReply(expert));
-            } else if (choice !== "N") {
+            } else if (choice === "N") {
+                return;
+            } else {
                 const expertIdx = parseInt(choice);
                 if (!isNaN(expertIdx) && expertIdx >= 0 && expertIdx < experts.length) {
                     expertReply(experts[expertIdx]);
