@@ -233,6 +233,15 @@
 
         function promptExpertResponse() {
             const dialog = document.createElement('div');
+            dialog.style.position = 'fixed';
+            dialog.style.top = '50%';
+            dialog.style.left = '50%';
+            dialog.style.transform = 'translate(-50%, -50%)';
+            dialog.style.backgroundColor = '#fff';
+            dialog.style.padding = '20px';
+            dialog.style.border = '1px solid #ddd';
+            dialog.style.borderRadius = '8px';
+            dialog.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
             dialog.innerHTML = `
                 <p>Who should reply? Options:</p>
                 <button onclick="selectAllExperts()">All</button>
