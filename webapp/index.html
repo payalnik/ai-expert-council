@@ -141,43 +141,26 @@
             `;
 
             document.getElementById('loading').style.display = 'block';
-            fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${openaiKey}`
-                },
-                body: JSON.stringify({
-                    model: 'gpt-4o',
-                    messages: [{ role: 'user', content: promptText }]
+            callOpenAIAPI([{ role: 'user', content: promptText }])
+                .then(data => {
+                    const expertList = data.choices[0].message.content.trim();
+                    expertList.split('\n').forEach(line => {
+                        const match = line.match(/(.+) \(Expertise: (.+), Personality: (.+)\)/);
+                        if (match) {
+                            const [, name, expertise, personality] = match;
+                            experts.push({ name, expertise, personality });
+                        }
+                    });
+                    enableControls();
+                    showActiveExperts();
                 })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const expertList = data.choices[0].message.content.trim();
-                expertList.split('\n').forEach(line => {
-                    const match = line.match(/(.+) \(Expertise: (.+), Personality: (.+)\)/);
-                    if (match) {
-                        const [, name, expertise, personality] = match;
-                        experts.push({ name, expertise, personality });
-                    }
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Error: Unable to generate experts.");
+                })
+                .finally(() => {
+                    document.getElementById('loading').style.display = 'none';
                 });
-                //alert("Experts generated and added successfully.");
-                enableControls();
-                showActiveExperts();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("Error: Unable to generate experts.");
-            })
-            .finally(() => {
-                document.getElementById('loading').style.display = 'none';
-            });
         }
 
         window.onload = function() {
@@ -328,7 +311,25 @@
                 messages.push({ role: "user", content: combinedUserMessage.trim() });
             }
 
-            fetch('https://api.openai.com/v1/chat/completions', {
+            callOpenAIAPI(messages)
+                .then(data => {
+                    if (data.choices && data.choices.length > 0 && data.choices[0].message) {
+                        let responseText = data.choices[0].message.content.trim();
+                        document.getElementById('chat').innerHTML += `<p><strong>${expert.name}:</strong> ${responseText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>`;
+                        history.push({ [expert.name]: responseText });
+                    } else {
+                        console.error('Unexpected API response structure:', data);
+                        document.getElementById('chat').innerHTML += `<p>Error: Unexpected API response structure.</p>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('chat').innerHTML += `<p>Error: Unable to fetch response from API.</p>`;
+                });
+        }
+
+        function callOpenAIAPI(messages) {
+            return fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -339,20 +340,11 @@
                     messages: messages
                 })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.choices && data.choices.length > 0 && data.choices[0].message) {
-                    let responseText = data.choices[0].message.content.trim();
-                    document.getElementById('chat').innerHTML += `<p><strong>${expert.name}:</strong> ${responseText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>`;
-                    history.push({ [expert.name]: responseText });
-                } else {
-                    console.error('Unexpected API response structure:', data);
-                    document.getElementById('chat').innerHTML += `<p>Error: Unexpected API response structure.</p>`;
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('chat').innerHTML += `<p>Error: Unable to fetch response from API.</p>`;
+                return response.json();
             });
         }
     </script>
