@@ -194,28 +194,26 @@
 
             const openaiKeyButton = document.getElementById('openaiKeyButton');
             const anthropicKeyButton = document.getElementById('anthropicKeyButton');
-            if (openaiKey) {
+
+            if (openaiKey || anthropicKey) {
+                console.log('Hei');
                 openaiKeyButton.disabled = true;
-            }
-            if (anthropicKey) {
                 anthropicKeyButton.disabled = true;
                 enableControls();
             }
         };
 
         function enableControls() {
-            localStorage.setItem('apiKey', apiKey);
-            localStorage.setItem('apiKey', apiKey);
             document.getElementById('addExpertButton').style.display = 'block';
             document.getElementById('generateExpertsButton').style.display = 'block';
             document.getElementById('openaiKeyButton').style.display = 'none';
             document.getElementById('anthropicKeyButton').style.display = 'none';
             if (experts.length === 0) {
-                inputField.disabled = true;
-                inputField.placeholder = 'Add or generate experts to start dialog';
+                input.disabled = true;
+                input.placeholder = 'Add or generate experts to start dialog';
             } else {
-                inputField.disabled = false;
-                inputField.placeholder = 'Type your message here';
+                input.disabled = false;
+                input.placeholder = 'Type your message here';
             }
         }
 
@@ -227,9 +225,6 @@
             }
             openaiKey = openaiKeyInput;
             localStorage.setItem('openaikey', openaiKey);
-            document.getElementById('openaiKeyButton').disabled = true;
-            document.getElementById('anthropicKeyButton').disabled = true;
-            document.getElementById('openaiKeyButton').disabled = true;
             document.getElementById('openaiKeyButton').disabled = true;
             document.getElementById('anthropicKeyButton').disabled = true;
             enableControls();
