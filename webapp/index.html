@@ -145,7 +145,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
+                    'Authorization': `Bearer ${openaiKey || anthropicKey}`
                 },
                 body: JSON.stringify({
                     model: 'gpt-4o',
@@ -334,7 +334,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
+                    'Authorization': `Bearer ${openaiKey || anthropicKey}`
                 },
                 body: JSON.stringify({
                     model: 'gpt-4o',
