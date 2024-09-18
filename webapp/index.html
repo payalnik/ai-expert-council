@@ -126,7 +126,16 @@
 
             const promptText = `Generate a list of experts for the following scenario: ${scenario}. Make them diverse and relevant. \n\n
             Add some personal traits and experiences. 5 experts if not otherwise specified \n\n
-            Format each expert as 'Name (Expertise: expertise, Personality: personality)'.`;
+            Format each expert as 'Name (Expertise: expertise, Personality: personality)'.
+            Example:
+            Scenario: Generate 5 diverse experts with knowledge and/or experience relevant to discuss screen time of a 5yo kid.
+            Response:
+            John Doe (Expertise: Child psychology doctor, has 2 young kids, Personality: Friendly and approachable, always verifies advice with scientific research)
+            Jane Smith (Expertise: MS in Education, school teacher with 10 years of experience, Personality: Professional and reserved, authoritative)
+            Alice Johnson (Expertise: CS degree, works in tech, has developed an app for kids, Personality: Curious and innovative, sceptical about tech)
+            Bob Brown (Expertise: Sports coach, has 2 kids, Personality: Energetic and competitive, likes to ask questions at the core of the issue)
+            Carol White (Expertise: Teen influencer, deals a lot with social media, Personality: Bright and flashy, always tries to be the center of attention)
+            `;
 
             document.getElementById('loading').style.display = 'block';
             fetch('https://api.openai.com/v1/chat/completions', {
@@ -155,7 +164,7 @@
                         experts.push({ name, expertise, personality });
                     }
                 });
-                alert("Experts generated and added successfully.");
+                //alert("Experts generated and added successfully.");
                 enableControls();
                 showActiveExperts();
             })
@@ -271,13 +280,16 @@
                 .join("\n") || "No other experts available.";
 
             const systemContent = `
-                You are ${expert.name}, an expert in ${expert.expertise} with a ${expert.personality} personality. 
-                Here are the other experts:\n${expertDescriptions}. \n\n 
+                You are ${expert.name}.
+                Here's your background: ${expert.expertise}.
+                Your personality is ${expert.personality}. 
                 Keep it conversational. Don't jump to conclusions and don't start with solutions. Minimize bullet points and keep it short. 
                 Do not answer for other experts. Only answer for yourself. Stay within your expertise and character.
                 Don't focus on the points already made.
-                Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice
-            `.trim();
+                Focus on your unique strengths and experiences, don't try to give generic, well-rounded advice.
+
+                Here are the other experts:\n${expertDescriptions}. \n\n 
+                `.trim();
 
             const messages = [
                 {
