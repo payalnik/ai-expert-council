@@ -186,7 +186,8 @@
                 <p style="color: grey;">This app uses AI to generate a council of experts. \n\n
                     You can add experts or generate them based on your specific needs.</p>
             `;
-            const inputField = document.getElementById('input');
+            document.getElementById('openaiKeyButton').style.display = 'none';
+            document.getElementById('anthropicKeyButton').style.display = 'none';
             inputField.disabled = true;
             inputField.placeholder = 'Add or generate experts to start dialog';
 
@@ -206,7 +207,8 @@
             localStorage.setItem('apiKey', apiKey);
             document.getElementById('addExpertButton').style.display = 'block';
             document.getElementById('generateExpertsButton').style.display = 'block';
-            const inputField = document.getElementById('input');
+            document.getElementById('openaiKeyButton').style.display = 'none';
+            document.getElementById('anthropicKeyButton').style.display = 'none';
             if (experts.length === 0) {
                 inputField.disabled = true;
                 inputField.placeholder = 'Add or generate experts to start dialog';
