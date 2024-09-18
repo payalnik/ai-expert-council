@@ -73,7 +73,8 @@
 <body>
     <h1>Expert Council Web App</h1>
     <div class="button-container">
-        <button id="apiKeyButton" onclick="enterApiKey()">Enter API Key</button>
+        <button id="openaiKeyButton" onclick="enterOpenAIKey()">Add OpenAI Key</button>
+        <button id="anthropicKeyButton" onclick="enterAnthropicKey()">Add Anthropic Key</button>
         <button id="newChatButton" onclick="newChat()" style="display: none;">New Chat</button>
         <button id="addExpertButton" onclick="addExpert()" style="display: none;">Add Expert</button>
         <button id="generateExpertsButton" onclick="generateExperts()" style="display: none;">Generate Experts</button>
@@ -84,7 +85,8 @@
     <script>
         let experts = [];
         let history = [];
-        let apiKey = localStorage.getItem('apiKey') || '';
+        let openaiKey = localStorage.getItem('openaikey') || '';
+        let anthropicKey = localStorage.getItem('anthropickey') || '';
 
         function newChat() {
             history = [];
@@ -187,9 +189,13 @@
             inputField.disabled = true;
             inputField.placeholder = 'Add or generate experts to start dialog';
 
-            const apiKeyButton = document.getElementById('apiKeyButton');
-            if (apiKey) {
-                apiKeyButton.textContent = 'Edit API Key';
+            const openaiKeyButton = document.getElementById('openaiKeyButton');
+            const anthropicKeyButton = document.getElementById('anthropicKeyButton');
+            if (openaiKey) {
+                openaiKeyButton.disabled = true;
+            }
+            if (anthropicKey) {
+                anthropicKeyButton.disabled = true;
                 enableControls();
             }
         };
@@ -209,25 +215,28 @@
             }
         }
 
-        function enterApiKey() {
-            const apiKeyInput = prompt("Please enter your API key:");
-            if (!apiKeyInput) {
-                alert('API key is required to use this application.');
+        function enterOpenAIKey() {
+            const openaiKeyInput = prompt("Please enter your OpenAI API key:");
+            if (!openaiKeyInput) {
+                alert('OpenAI API key is required to use this application.');
                 return;
             }
-            apiKey = apiKeyInput;
-            if (!apiKey) {
-                alert('API key is required to use this application.');
+            openaiKey = openaiKeyInput;
+            localStorage.setItem('openaikey', openaiKey);
+            document.getElementById('openaiKeyButton').disabled = true;
+            enableControls();
+        }
+
+        function enterAnthropicKey() {
+            const anthropicKeyInput = prompt("Please enter your Anthropic API key:");
+            if (!anthropicKeyInput) {
+                alert('Anthropic API key is required to use this application.');
                 return;
             }
-            localStorage.setItem('apiKey', apiKey);
-            document.getElementById('apiKeyButton').textContent = 'Edit API Key';
-            document.getElementById('addExpertButton').style.display = 'block';
-            document.getElementById('generateExpertsButton').style.display = 'block';
-            document.getElementById('showExpertsLink').style.display = 'inline';
-            document.getElementById('showExpertsLink').style.pointerEvents = 'auto';
-            document.getElementById('showExpertsLink').style.color = '#007bff';
-            document.getElementById('input').disabled = false;
+            anthropicKey = anthropicKeyInput;
+            localStorage.setItem('anthropickey', anthropicKey);
+            document.getElementById('anthropicKeyButton').disabled = true;
+            enableControls();
         }
 
         function sendMessage() {
