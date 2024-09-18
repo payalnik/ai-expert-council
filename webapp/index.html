@@ -141,7 +141,8 @@
             `;
 
             document.getElementById('loading').style.display = 'block';
-            callOpenAIAPI([{ role: 'user', content: promptText }])
+            const apiFunction = anthropicKey ? callAnthropicAPI : callOpenAIAPI;
+            apiFunction([{ role: 'user', content: promptText }])
                 .then(data => {
                     const expertList = data.choices[0].message.content.trim();
                     expertList.split('\n').forEach(line => {
@@ -311,7 +312,8 @@
                 messages.push({ role: "user", content: combinedUserMessage.trim() });
             }
 
-            callOpenAIAPI(messages)
+            const apiFunction = anthropicKey ? callAnthropicAPI : callOpenAIAPI;
+            apiFunction(messages)
                 .then(data => {
                     if (data.choices && data.choices.length > 0 && data.choices[0].message) {
                         let responseText = data.choices[0].message.content.trim();
@@ -338,6 +340,27 @@
                 body: JSON.stringify({
                     model: 'gpt-4o',
                     messages: messages
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            });
+        }
+        function callAnthropicAPI(messages) {
+            const combinedMessages = messages.map(msg => `${msg.role}: ${msg.content}`).join(' ');
+            return fetch('https://api.anthropic.com/v1/claude/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${anthropicKey}`
+                },
+                body: JSON.stringify({
+                    model: 'claude-3-5-sonnet-20240620',
+                    max_tokens: 1000,
+                    system: combinedMessages
                 })
             })
             .then(response => {
