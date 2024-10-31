@@ -351,7 +351,7 @@
         }
         function callAnthropicAPI(messages) {
             const combinedMessages = messages.map(msg => `${msg.role}: ${msg.content}`).join(' ');
-            return fetch('https://api.anthropic.com/v1/claude/completions', {
+            return fetch('https://cors-anywhere.herokuapp.com/https://api.anthropic.com/v1/claude/completions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
