@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expert Council Web App</title>
@@ -69,30 +69,49 @@
             background-color: #0056b3;
         }
     </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KGWHLT0R08"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-KGWHLT0R08');
+    </script>
 </head>
 <body>
     <h1>Expert Council Web App</h1>
     <div class="button-container">
-        <button id="openaiKeyButton" onclick="enterOpenAIKey()">Add OpenAI Key</button>
-        <button id="anthropicKeyButton" onclick="enterAnthropicKey()">Add Anthropic Key</button>
+        <button id="apiKeyButton" onclick="enterApiKey()">Enter API Key</button>
         <button id="newChatButton" onclick="newChat()" style="display: none;">New Chat</button>
         <button id="addExpertButton" onclick="addExpert()" style="display: none;">Add Expert</button>
         <button id="generateExpertsButton" onclick="generateExperts()" style="display: none;">Generate Experts</button>
     </div>
-    <div id="chat"></div>
+    <div id="chat">
+                <p>Welcome to the Expert Council Simulation!</p>
+                <p style="color: grey;">This app uses AI to generate a council of experts. 
+
+
+                    You can add experts or generate them based on your specific needs.</p>
+                    <p style="color: grey;">You will need an <a href="https://platform.openai.com/api-keys">OpenAI API key</a> and credits on your account.</p>
+                    <p style="color: grey;">We do not store or transfer your API key or conversation history.</p>
+    
+            </div>
     <div id="loading" style="display: none; color: grey;">Loading, please wait...</div>
-    <input type="text" id="input" placeholder="Type your message here" onkeydown="if(event.key === 'Enter') sendMessage()" disabled>
+    <div id="waiting" style="display: none; color: grey;">Waiting for reply...</div>
+    <input type="text" id="input" placeholder="Add or generate experts to start dialog" onkeydown="if(event.key === 'Enter') sendMessage()" disabled="disabled">
     <script>
         let experts = [];
         let history = [];
-        let openaiKey = localStorage.getItem('openaikey') || '';
-        let anthropicKey = localStorage.getItem('anthropickey') || '';
+        let apiKey = localStorage.getItem('apiKey') || '';
 
         function newChat() {
             history = [];
             document.getElementById('chat').innerHTML = `
                 <p>Welcome to the Expert Council Simulation!</p>
                 <p style="color: grey;">This app uses AI to generate a council of experts. You can add your own experts or generate them based on a scenario.</p>
+                <p style="color: grey;">You will need an <a href="https://platform.openai.com/api-keys">OpenAI API key</a> and credits on your account.</p>
+                <p style="color: grey;">We do not store or transfer your API key or conversation history.</p>
             `;
         }
 
@@ -100,7 +119,6 @@
             if (experts.length === 0) {
                 alert("No active experts available.");
                 return;
-                enableControls();
             }
             const expertList = experts.map(expert => `${expert.name} (Expertise: ${expert.expertise}, Personality: ${expert.personality})`).join('<br>');
             document.getElementById('chat').innerHTML += `<p><strong>Active Experts:</strong><br>${expertList}</p>`;
@@ -141,27 +159,45 @@
             `;
 
             document.getElementById('loading').style.display = 'block';
-            const apiFunction = anthropicKey ? callAnthropicAPI : callOpenAIAPI;
-            apiFunction([{ role: 'user', content: promptText }])
-                .then(data => {
-                    const expertList = data.choices[0].message.content.trim();
-                    expertList.split('\n').forEach(line => {
-                        const match = line.match(/(.+) \(Expertise: (.+), Personality: (.+)\)/);
-                        if (match) {
-                            const [, name, expertise, personality] = match;
-                            experts.push({ name, expertise, personality });
-                        }
-                    });
-                    enableControls();
-                    showActiveExperts();
+            document.getElementById('waiting').style.display = 'block';
+            fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o',
+                    messages: [{ role: 'user', content: promptText }]
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert("Error: Unable to generate experts.");
-                })
-                .finally(() => {
-                    document.getElementById('loading').style.display = 'none';
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const expertList = data.choices[0].message.content.trim();
+                expertList.split('\n').forEach(line => {
+                    const match = line.match(/(.+) \(Expertise: (.+), Personality: (.+)\)/);
+                    if (match) {
+                        const [, name, expertise, personality] = match;
+                        experts.push({ name, expertise, personality });
+                    }
                 });
+                //alert("Experts generated and added successfully.");
+                enableControls();
+                showActiveExperts();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Error: Unable to generate experts.");
+            })
+            .finally(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('waiting').style.display = 'none';
+            });
         }
 
         window.onload = function() {
@@ -169,67 +205,61 @@
                 <p>Welcome to the Expert Council Simulation!</p>
                 <p style="color: grey;">This app uses AI to generate a council of experts. \n\n
                     You can add experts or generate them based on your specific needs.</p>
+                <p style="color: grey;">You will need an <a href="https://platform.openai.com/api-keys">OpenAI API key</a> and credits on your account.</p>
+                <p style="color: grey;">We do not store or transfer your API key or conversation history.</p>
+
             `;
-            document.getElementById('openaiKeyButton').style.display = 'block';
-            document.getElementById('anthropicKeyButton').style.display = 'block';
             const inputField = document.getElementById('input');
             inputField.disabled = true;
             inputField.placeholder = 'Add or generate experts to start dialog';
 
-            const openaiKeyButton = document.getElementById('openaiKeyButton');
-            const anthropicKeyButton = document.getElementById('anthropicKeyButton');
-
-            if (openaiKey || anthropicKey) {
-                console.log('Hei');
-                openaiKeyButton.disabled = true;
-                anthropicKeyButton.disabled = true;
+            const apiKeyButton = document.getElementById('apiKeyButton');
+            if (apiKey) {
+                apiKeyButton.textContent = 'Edit API Key';
                 enableControls();
             }
         };
 
         function enableControls() {
+            localStorage.setItem('apiKey', apiKey);
+            localStorage.setItem('apiKey', apiKey);
             document.getElementById('addExpertButton').style.display = 'block';
             document.getElementById('generateExpertsButton').style.display = 'block';
-            document.getElementById('openaiKeyButton').style.display = 'none';
-            document.getElementById('anthropicKeyButton').style.display = 'none';
+            const inputField = document.getElementById('input');
             if (experts.length === 0) {
-                input.disabled = true;
-                input.placeholder = 'Add or generate experts to start dialog';
+                inputField.disabled = true;
+                inputField.placeholder = 'Add or generate experts to start dialog';
             } else {
-                input.disabled = false;
-                input.placeholder = 'Type your message here';
+                inputField.disabled = false;
+                inputField.placeholder = 'Type your message here';
             }
         }
 
-        function enterOpenAIKey() {
-            const openaiKeyInput = prompt("Please enter your OpenAI API key:");
-            if (!openaiKeyInput) {
-                alert('OpenAI API key is required to use this application.');
+        function enterApiKey() {
+            const apiKeyInput = prompt("Please enter your API key:");
+            if (!apiKeyInput) {
+                alert('API key is required to use this application.');
                 return;
             }
-            openaiKey = openaiKeyInput;
-            localStorage.setItem('openaikey', openaiKey);
-            document.getElementById('openaiKeyButton').disabled = true;
-            document.getElementById('anthropicKeyButton').disabled = true;
-            enableControls();
-        }
-
-        function enterAnthropicKey() {
-            const anthropicKeyInput = prompt("Please enter your Anthropic API key:");
-            if (!anthropicKeyInput) {
-                alert('Anthropic API key is required to use this application.');
+            apiKey = apiKeyInput;
+            if (!apiKey) {
+                alert('API key is required to use this application.');
                 return;
             }
-            anthropicKey = anthropicKeyInput;
-            localStorage.setItem('anthropickey', anthropicKey);
-            document.getElementById('anthropicKeyButton').disabled = true;
-            enableControls();
+            localStorage.setItem('apiKey', apiKey);
+            document.getElementById('apiKeyButton').textContent = 'Edit API Key';
+            document.getElementById('addExpertButton').style.display = 'block';
+            document.getElementById('generateExpertsButton').style.display = 'block';
+            document.getElementById('showExpertsLink').style.display = 'inline';
+            document.getElementById('showExpertsLink').style.pointerEvents = 'auto';
+            document.getElementById('showExpertsLink').style.color = '#007bff';
+            document.getElementById('input').disabled = false;
         }
 
         function sendMessage() {
             const message = document.getElementById('input').value;
             if (!message) return;
-            document.getElementById('chat').innerHTML += `<p><strong>You:</strong> ${message.replace(/\n/g, '<br />')}</p>`;
+            document.getElementById('chat').innerHTML += `<p><strong>You:</strong> ${message}</p>`;
             history.push({ "Live Person": message });
             document.getElementById('input').value = '';
             promptExpertResponse();
@@ -270,6 +300,7 @@
         }
 
         function expertReply(expert) {
+            document.getElementById('waiting').style.display = 'block';
 
             const expertDescriptions = experts.filter(exp => exp !== expert)
                 .map(exp => `${exp.name}: Expertise in ${exp.expertise}, Personality: ${exp.personality}`)
@@ -312,64 +343,37 @@
                 messages.push({ role: "user", content: combinedUserMessage.trim() });
             }
 
-            const apiFunction = anthropicKey ? callAnthropicAPI : callOpenAIAPI;
-            apiFunction(messages)
-                .then(data => {
-                    if (data.choices && data.choices.length > 0 && data.choices[0].message) {
-                        let responseText = data.choices[0].message.content.trim();
-                        document.getElementById('chat').innerHTML += `<p><strong>${expert.name}:</strong> ${responseText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br />')}</p>`;
-                        history.push({ [expert.name]: responseText });
-                    } else {
-                        console.error('Unexpected API response structure:', data);
-                        document.getElementById('chat').innerHTML += `<p>Error: Unexpected API response structure.</p>`;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('chat').innerHTML += `<p>Error: Unable to fetch response from API.</p>`;
-                });
-        }
-
-        function callOpenAIAPI(messages) {
-            return fetch('https://api.openai.com/v1/chat/completions', {
+            fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${openaiKey}`
+                    'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
                     model: 'gpt-4o',
                     messages: messages
                 })
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+            .then(response => response.json())
+            .then(data => {
+                if (data.choices && data.choices.length > 0 && data.choices[0].message) {
+                    let responseText = data.choices[0].message.content.trim();
+                    document.getElementById('chat').innerHTML += `<p><strong>${expert.name}:</strong> ${responseText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>`;
+                    history.push({ [expert.name]: responseText });
+                } else {
+                    console.error('Unexpected API response structure:', data);
+                    document.getElementById('chat').innerHTML += `<p>Error: Unexpected API response structure.</p>`;
                 }
-                return response.json();
-            });
-        }
-        function callAnthropicAPI(messages) {
-            const combinedMessages = messages.map(msg => `${msg.role}: ${msg.content}`).join(' ');
-            return fetch('https://cors-anywhere.herokuapp.com/https://api.anthropic.com/v1/claude/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${anthropicKey}`
-                },
-                body: JSON.stringify({
-                    model: 'claude-3-5-sonnet-20240620',
-                    max_tokens: 1000,
-                    system: combinedMessages
-                })
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('chat').innerHTML += `<p>Error: Unable to fetch response from API.</p>`;
+            })
+            .finally(() => {
+                document.getElementById('waiting').style.display = 'none';
             });
         }
     </script>
-</body>
-</html>
+
+
+</body></html>
